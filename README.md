@@ -1,1 +1,505 @@
-# Iyann
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Button Hover Effects V2</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: hsla(230, 55%, 4%, 1);
+      color: #fff;
+      margin: 0;
+      padding: 40px 20px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      min-height: 100vh;
+    }
+
+    h1 {
+      text-align: center;
+      font-size: 2.5rem;
+      margin-bottom: 10px;
+      text-shadow: 0 0 10px #fff5;
+    }
+
+    .version {
+      text-align: center;
+      font-size: 1rem;
+      color: #00e0ff;
+      margin-bottom: 30px;
+      opacity: 0.8;
+    }
+
+    .demo {
+      display: grid;
+      grid-template-columns: auto auto;
+      gap: 15px;
+      justify-content: center;
+      align-items: center;
+      margin-bottom: 10px;
+      width: 100%;
+      max-width: 700px;
+    }
+
+    .code-box {
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: 8px;
+      padding: 0px 8px;
+      font-family: "Consolas", "Courier New", monospace;
+      font-size: 13px;
+      line-height: 1.2;
+      white-space: pre;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+      overflow-x: auto;
+      max-width: 220px;
+      min-width: 200px;
+    }
+
+    .selector { color: #4ec9b0; }
+    .prop     { color: #9cdcfe; }
+    .punct    { color: #d4d4d4; }
+    .value    { color: #ce9178; }
+    .num      { color: #b5cea8; }
+    .func     { color: #dcdcaa; }
+
+    .btn-box {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    button {
+      position: relative;
+      width: 200px;
+      height: 60px;
+      font-size: 16px;
+      font-weight: bold;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.4s ease;
+      overflow: hidden;
+      color: white;
+    }
+
+    /* 1. NEON PULSE */
+    .fx-neon-pulse {
+      background: #000;
+      color: #fff;
+      border: 3px solid #ff00ff;
+      box-shadow: 
+        0 0 10px #ff00ff,
+        inset 0 0 10px #ff00ff;
+      animation: neon-idle 2s ease-in-out infinite;
+    }
+    .fx-neon-pulse:hover {
+      background: #ff00ff;
+      color: #000;
+      box-shadow: 
+        0 0 20px #ff00ff,
+        0 0 40px #ff00ff,
+        0 0 60px #ff00ff,
+        0 0 80px #ff00ff,
+        inset 0 0 20px #fff;
+      animation: neon-pulse 0.1s ease-in-out infinite;
+    }
+
+    /* 2. 3D PUSH */
+    .fx-push {
+      background: linear-gradient(145deg, #f093fb 0%, #f5576c 100%);
+      box-shadow: 0 6px 0 #c41f3a, 0 8px 15px rgba(0,0,0,0.3);
+      transition: all 0.1s ease;
+    }
+    .fx-push:hover {
+      box-shadow: 0 2px 0 #c41f3a, 0 4px 8px rgba(0,0,0,0.3);
+      transform: translateY(4px);
+    }
+    .fx-push:active {
+      box-shadow: 0 0 0 #c41f3a, 0 2px 4px rgba(0,0,0,0.3);
+      transform: translateY(6px);
+    }
+
+    /* 3. ACTIVATE CARD */
+    .fx-activate {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: #fff;
+      transform-style: preserve-3d;
+      perspective: 1000px;
+      position: relative;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+      transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+    .fx-activate::before {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 0;
+      height: 0;
+      background: radial-gradient(circle, rgba(255, 255, 255, 0.8) 0%, transparent 70%);
+      border-radius: 50%;
+      transform: translate(-50%, -50%);
+      opacity: 0;
+      transition: all 0.6s ease;
+    }
+    .fx-activate::after {
+      content: '';
+      position: absolute;
+      inset: -2px;
+      background: linear-gradient(45deg, #00d4ff, #7000ff, #ff00e5, #00d4ff);
+      background-size: 300% 300%;
+      border-radius: 8px;
+      z-index: -1;
+      opacity: 0;
+      transition: opacity 0.4s ease;
+      animation: border-flow 3s linear infinite;
+    }
+    .fx-activate:hover {
+      transform: translateY(-5px) rotateX(10deg) rotateY(-10deg) scale(1.05);
+      box-shadow: 
+        0 15px 35px rgba(102, 126, 234, 0.4),
+        0 5px 15px rgba(0, 0, 0, 0.3),
+        inset 0 0 20px rgba(255, 255, 255, 0.1);
+    }
+    .fx-activate:hover::before {
+      width: 300px;
+      height: 300px;
+      opacity: 0.3;
+    }
+    .fx-activate:hover::after {
+      opacity: 1;
+    }
+
+    /* 4. GLITCH */
+    .fx-glitch {
+      background: #00ff88;
+      color: #000;
+    }
+    .fx-glitch::before,
+    .fx-glitch::after {
+      content: attr(data-text);
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+    }
+    .fx-glitch::before {
+      color: #ff00de;
+      z-index: -1;
+    }
+    .fx-glitch::after {
+      color: #00ffff;
+      z-index: -2;
+    }
+    .fx-glitch:hover::before {
+      animation: glitch1 0.3s infinite;
+      opacity: 0.8;
+    }
+    .fx-glitch:hover::after {
+      animation: glitch2 0.3s infinite;
+      opacity: 0.8;
+    }
+    .fx-glitch:hover {
+      animation: glitch-main 0.3s infinite;
+    }
+
+    /* 5. RIPPLE RINGS */
+    .fx-rings {
+  background: linear-gradient(135deg, #5efce8 0%, #736efe 100%);
+  position: relative;
+  overflow: visible;
+  transition: all 0.3s ease;
+}
+
+.fx-rings::before,
+.fx-rings::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 100%;
+  height: 100%;
+  border: 3px solid #5efce8;
+  border-radius: 8px;
+  transform: translate(-50%, -50%);
+  opacity: 0;
+}
+
+.fx-rings:hover {
+  transform: scale(1.05);
+  box-shadow: 
+    0 0 25px rgba(115, 110, 254, 0.6),
+    0 0 45px rgba(94, 252, 232, 0.4);
+}
+
+.fx-rings:hover::before {
+  animation: ring-expand 1.5s ease-out infinite;
+}
+
+.fx-rings:hover::after {
+  animation: ring-expand 1.5s ease-out 0.5s infinite;
+}
+
+@keyframes ring-expand {
+  0% {
+    transform: translate(-50%, -50%) scale(1);
+    opacity: 0.8;
+  }
+  100% {
+    transform: translate(-50%, -50%) scale(1.6);
+    opacity: 0;
+  }
+}
+
+
+    /* 6. LIQUID FILL */
+    .fx-liquid {
+      background: transparent;
+      border: 2px solid #00d4ff;
+      color: #00d4ff;
+    }
+    .fx-liquid::before {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      height: 0;
+      background: #00d4ff;
+      transition: height 0.5s ease;
+      z-index: -1;
+      border-radius: 50% 50% 0 0;
+    }
+    .fx-liquid:hover {
+      color: #000;
+      border-color: #00d4ff;
+    }
+    .fx-liquid:hover::before {
+      height: 180%;
+      animation: wave 0.8s ease-in-out;
+    }
+
+    /* Animations */
+    @keyframes neon-idle {
+      0%, 100% { 
+        box-shadow: 
+          0 0 10px #ff00ff,
+          inset 0 0 10px #ff00ff;
+      }
+      50% { 
+        box-shadow: 
+          0 0 15px #ff00ff,
+          inset 0 0 15px #ff00ff;
+      }
+    }
+
+    @keyframes neon-pulse {
+      0%, 100% { 
+        box-shadow: 
+          0 0 20px #ff00ff,
+          0 0 40px #ff00ff,
+          0 0 60px #ff00ff,
+          0 0 80px #ff00ff,
+          inset 0 0 20px #fff;
+      }
+      50% { 
+        box-shadow: 
+          0 0 30px #ff00ff,
+          0 0 50px #ff00ff,
+          0 0 70px #ff00ff,
+          0 0 100px #ff00ff,
+          inset 0 0 30px #fff;
+      }
+    }
+
+    @keyframes border-flow {
+      0% {
+        background-position: 0% 50%;
+      }
+      50% {
+        background-position: 100% 50%;
+      }
+      100% {
+        background-position: 0% 50%;
+      }
+    }
+
+    @keyframes glitch1 {
+      0% { transform: translate(0); }
+      20% { transform: translate(-3px, 3px); }
+      40% { transform: translate(-3px, -3px); }
+      60% { transform: translate(3px, 3px); }
+      80% { transform: translate(3px, -3px); }
+      100% { transform: translate(0); }
+    }
+
+    @keyframes glitch2 {
+      0% { transform: translate(0); }
+      20% { transform: translate(3px, -3px); }
+      40% { transform: translate(3px, 3px); }
+      60% { transform: translate(-3px, -3px); }
+      80% { transform: translate(-3px, 3px); }
+      100% { transform: translate(0); }
+    }
+
+    @keyframes glitch-main {
+      0% { transform: translate(0); }
+      20% { transform: translate(-2px, 2px); }
+      40% { transform: translate(2px, -2px); }
+      60% { transform: translate(-2px, -2px); }
+      80% { transform: translate(2px, 2px); }
+      100% { transform: translate(0); }
+    }
+
+    @keyframes ring-expand {
+      0% {
+        width: 100%;
+        height: 100%;
+        opacity: 0.8;
+      }
+      100% {
+        width: 160%;
+        height: 200%;
+        opacity: 0;
+      }
+    }
+
+    @keyframes wave {
+      0% { border-radius: 50% 50% 0 0; }
+      25% { border-radius: 40% 60% 0 0; }
+      50% { border-radius: 60% 40% 0 0; }
+      75% { border-radius: 45% 55% 0 0; }
+      100% { border-radius: 50% 50% 0 0; }
+    }
+
+    /* Responsive Design */
+    @media (max-width: 768px) {
+      body {
+        padding: 20px 5px;
+      }
+
+      h1 {
+        font-size: 1.8rem;
+        margin-bottom: 8px;
+      }
+
+      .version {
+        font-size: 0.85rem;
+        margin-bottom: 20px;
+      }
+
+      .demo {
+        grid-template-columns: 1fr 1fr;
+        gap: 8px;
+        margin-bottom: 12px;
+        max-width: 100%;
+        padding: 0;
+      }
+
+      .code-box {
+        max-width: none;
+        min-width: auto;
+        width: 100%;
+        font-size: 10px;
+        padding: 6px;
+      }
+
+      button {
+        width: 100%;
+        height: 55px;
+        font-size: 13px;
+      }
+    }
+
+    @media (max-width: 480px) {
+      body {
+        padding: 15px 3px;
+      }
+
+      h1 {
+        font-size: 1.5rem;
+      }
+
+      .demo {
+        gap: 5px;
+        margin-bottom: 10px;
+      }
+
+      .code-box {
+        font-size: 9px;
+        padding: 5px;
+      }
+
+      button {
+        width: 100%;
+        height: 50px;
+        font-size: 11px;
+        font-weight: bold;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="demo">
+    <div class="code-box">
+<span class="selector">.fx-glitch:hover</span> <span class="punct">{</span>
+  <span class="prop">animation</span>: <span class="func">glitch</span><span class="punct">;</span>
+<span class="punct">}</span>
+    </div>
+    <div class="btn-box"><button class="fx-glitch" data-text="GLITCH">GLITCH</button></div>
+  </div>
+
+  <div class="demo">
+    <div class="code-box">
+<span class="selector">.fx-neon-pulse:hover</span> <span class="punct">{</span>
+  <span class="prop">animation</span>: <span class="func">neon-pulse</span><span class="punct">;</span>
+<span class="punct">}</span>
+    </div>
+    <div class="btn-box"><button class="fx-neon-pulse">NEON PULSE</button></div>
+  </div>
+
+  <div class="demo">
+    <div class="code-box">
+<span class="selector">.fx-push:hover</span> <span class="punct">{</span>
+  <span class="prop">transform</span>:<span class="func">translateY</span>(<span class="num">4px</span>)<span class="punct">;</span>
+<span class="punct">}</span>
+    </div>
+    <div class="btn-box"><button class="fx-push">3D PUSH</button></div>
+  </div>
+
+  <div class="demo">
+    <div class="code-box">
+<span class="selector">.fx-activate:hover</span> <span class="punct">{</span>
+  <span class="prop">transform</span>: <span class="func">rotateX</span>(<span class="num">10deg</span>)<span class="punct">;</span>
+<span class="punct">}</span>
+    </div>
+    <div class="btn-box"><button class="fx-activate">ACTIVATE CARD</button></div>
+  </div>
+
+
+  <div class="demo">
+    <div class="code-box">
+<span class="selector">.fx-rings::before</span> <span class="punct">{</span>
+  <span class="prop">animation</span>: <span class="func">ring-expand</span><span class="punct">;</span>
+<span class="punct">}</span>
+    </div>
+    <div class="btn-box"><button class="fx-rings">RIPPLE RINGS</button></div>
+  </div>
+
+  <div class="demo">
+    <div class="code-box">
+<span class="selector">.fx-liquid::before</span> <span class="punct">{</span>
+  <span class="prop">height</span>: <span class="num">180%</span><span class="punct">;</span>
+<span class="punct">}</span>
+    </div>
+    <div class="btn-box"><button class="fx-liquid">LIQUID FILL</button></div>
+  </div>
+</body>
+</html>
